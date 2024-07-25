@@ -1,0 +1,210 @@
+body {
+    background-color: #f9f9f9;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-y: scroll;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.header-section {
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
+    z-index: 1000;
+    padding-bottom: 20px;
+}
+
+.mt-4 {
+    margin-top: 4rem;
+}
+
+.mb-3 {
+    margin-bottom: 3rem;
+}
+
+.form-control {
+    border-radius: 5px;
+}
+
+#tag-container {
+    margin-bottom: 10px;
+}
+
+#tag-container .btn-primary {
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+.datepicker {
+    border-radius: 5px;
+}
+
+.btn-primary {
+    border-radius: 5px;
+}
+
+.btn-danger {
+    border-radius: 5px;
+}
+
+.list-header {
+    font-size: 0.9em;
+    color: #6c757d;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-title {
+    width: 30%;
+    text-align: center;
+    margin-right: 20px;
+    margin-left: -100px;
+}
+
+.header-tags {
+    width: 20%;
+    text-align: center;
+}
+
+.header-deadline {
+    width: 30%;
+    text-align: center;
+}
+
+.header-actions {
+    width: 40%;
+    text-align: right;
+}
+
+.list-group-item {
+    margin-top: 10px;
+    background-color: rgba(240, 240, 240, 0.58);
+    border: none;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.habit-details {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 70%;
+}
+
+.habit-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-right: 25px;
+    margin-left: -55px;
+}
+
+.tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tags-list li {
+    display: inline-block;
+    background-color: rgb(173, 216, 230);
+    border-radius: 10px;
+    padding: 4px 12px;
+    margin: 2px;
+}
+
+.custom-checkbox {
+    width: 24px;
+    height: 24px;
+    appearance: none;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 24px;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.custom-checkbox:checked {
+    background-color: #4caf50;
+    border-color: #4caf50;
+}
+
+.btn-danger.btn-sm {
+    padding: 0.25rem 0.5rem;
+}
+
+.delete-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: rgba(255, 0, 0, 0.9);
+    color: #fff;
+    transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+.delete-btn .fas {
+    font-size: 12px;
+}
+
+.habit-actions {
+    display: flex;
+    align-items: center;
+}
+
+.calendar-icon {
+    text-align: center;
+    width: 55px;
+    height: 58px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+}
+
+.calendar-month {
+    background-color: #ff6347;
+    padding: 2px;
+    font-size: 0.75em;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.calendar-day {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.btn-circle {
+    width: 40px;
+    height: 40px;
+    padding: 6px 0;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 18px;
+    line-height: 1.42857;
+}
+

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habit Tracker</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Bootstrap Datepicker CSS -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Popper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Datepicker JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="header-section">
+        <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+            <h1>Habit Tracker</h1>
+            <div>
+                <!-- Button to show filter form -->
+                <button id="show-filter-form-btn" class="btn btn-secondary btn-circle"><i class="fas fa-filter"></i>
+                </button>
+                <!-- Button to show add habit form -->
+                <button id="show-add-form-btn" class="btn btn-primary btn-circle"><i class="fas fa-plus"></i></button>
+            </div>
+        </div>
+
+        <!-- Add Habit Form -->
+        <form id="add-habit-form" action="/add" method="POST" class="mb-3 animate__animated" style="display: none;">
+            <div class="form-group">
+                <label for="title">Habit Name:</label>
+                <input type="text" class="form-control" id="habit-title" name="title" placeholder="Enter habit name..."
+                       required>
+            </div>
+            <div class="form-group">
+                <label for="tags">Tags:</label>
+                <div id="tag-container">
+                    <input type="search" class="form-control d-inline-block w-auto mb-1" id="tag-input"
+                           placeholder="Enter tag">
+                    <button type="button" class="btn btn-primary mb-1" id="add-tag-btn">+</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="deadline">Deadline:</label>
+                <input type="text" class="form-control datepicker" id="habit-deadline" name="deadline">
+            </div>
+            <button type="submit" class="btn btn-primary">Add Habit</button>
+        </form>
+
+        <!-- Filter Habits Section -->
+        <form id="filter-form" class="mb-3 animate__animated" style="display: none;">
+            <div class="form-row">
+                <div class="col">
+                    <label for="filter-tags">Filter by Tags:</label>
+                    <input type="text" class="form-control" id="filter-tags" placeholder="Enter tags, comma separated">
+                </div>
+                <div class="col">
+                    <label for="filter-start-date">Filter by Start Date:</label>
+                    <input type="text" class="form-control datepicker" id="filter-start-date"
+                           placeholder="Select start date">
+                </div>
+                <div class="col">
+                    <label for="filter-end-date">Filter by End Date:</label>
+                    <input type="text" class="form-control datepicker" id="filter-end-date"
+                           placeholder="Select end date">
+                </div>
+                <div class="col">
+                    <label for="filter-status">Filter by Status:</label>
+                    <select id="filter-status" class="form-control">
+                        <option value="all">All</option>
+                        <option value="completed">Completed</option>
+                        <option value="not_completed">Not Completed</option>
+                    </select>
+                </div>
+                <div class="col align-self-end">
+                    <button type="button" id="filter-btn" class="btn btn-success mt-2">Apply Filters</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Habits List Section -->
+    <div class="list-section mt-4">
+        <div class="list-header d-flex justify-content-between mb-2">
+            <span class="header-status">Status</span>
+            <span class="header-title">Habit Name</span>
+            <span class="header-tags">Tags</span>
+            <span class="header-actions">Deadline</span>
+        </div>
+        <ul class="list-group" id="habit-list">
+            {% for habit in habits %}
+                <li class="list-group-item d-flex justify-content-between align-items-center habit-item mb-2 animate__animated animate__fadeIn"
+                    data-tags="{{ habit.tags|join(',') }}" data-deadline="{{ habit.deadline }}"
+                    data-status="{{ 'completed' if habit.completed else 'not_completed' }}">
+                    <span class="habit-status">
+                        <input type="checkbox" class="toggle-complete custom-checkbox" data-id="{{ habit.id }}"
+                               {% if habit.completed %}checked{% endif %}>
+                    </span>
+                    <span class="habit-details">
+                        <strong class="habit-title">{{ habit.title }}</strong>
+                        <ul class="tags-list ml-2">
+                            {% for tag in habit.tags %}
+                                <li class="badge badge-secondary">{{ tag.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </span>
+                    <div class="habit-actions d-flex align-items-center">
+                        <div class="calendar-icon mr-2">
+                            <div class="calendar-month">{{ habit.deadline.strftime('%b').upper() }}</div>
+                            <div class="calendar-day">{{ habit.deadline.strftime('%d') }}</div>
+                        </div>
+                        <a href="/delete/{{ habit.id }}" class="btn btn-danger btn-sm delete-btn">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Initialize datepicker for all elements with class 'datepicker'
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd'
+        });
+
+        // Show add habit form
+        $('#show-add-form-btn').on('click', function () {
+            const form = $('#add-habit-form');
+            if (form.css('display') === 'none') {
+                form.css('display', 'block').addClass('animate__fadeIn');
+            } else {
+                form.removeClass('animate__fadeIn').addClass('animate__fadeOut').delay(500).queue(function () {
+                    form.css('display', 'none').removeClass('animate__fadeOut').dequeue();
+                });
+            }
+        });
+
+        // Show filter form
+        $('#show-filter-form-btn').on('click', function () {
+            const form = $('#filter-form');
+            if (form.css('display') === 'none') {
+                form.css('display', 'block').addClass('animate__fadeIn');
+            } else {
+                form.removeClass('animate__fadeIn').addClass('animate__fadeOut').delay(500).queue(function () {
+                    form.css('display', 'none').removeClass('animate__fadeOut').dequeue();
+                });
+            }
+        });
+
+        // Initialize event handlers
+        initializeEventHandlers();
+
+        // Apply filters on button click
+        $('#filter-btn').on('click', function () {
+            const filterTags = $('#filter-tags').val().toLowerCase().split(/[\s,;]+/).map(tag => tag.trim()).filter(tag => tag !== "");
+            const filterStartDate = $('#filter-start-date').val();
+            const filterEndDate = $('#filter-end-date').val();
+            const filterStatus = $('#filter-status').val();
+
+            const filterData = {
+                tags: filterTags,
+                start_date: filterStartDate,
+                end_date: filterEndDate,
+                status: filterStatus
+            };
+
+            $.ajax({
+                url: '/filter_habits',
+                method: 'POST',
+                data: JSON.stringify(filterData),
+                contentType: 'application/json',
+                success: function (response) {
+                    $('#habit-list').empty();
+                    response.habits.forEach(habit => {
+                        const habitItem = `
+                <li class="list-group-item d-flex justify-content-between align-items-center habit-item mb-2 animate__animated animate__fadeIn" data-tags="${habit.tags.join(',')}" data-deadline="${habit.deadline}" data-status="${habit.completed ? 'completed' : 'not_completed'}">
+                    <span class="habit-status">
+                        <input type="checkbox" class="toggle-complete custom-checkbox" data-id="${habit.id}" ${habit.completed ? 'checked' : ''}>
+                    </span>
+                    <span class="habit-details">
+                        <strong class="habit-title">${habit.title}</strong>
+                        <ul class="tags-list ml-2">
+                            ${habit.tags.map(tag => `<li class="badge badge-secondary">${tag}</li>`).join('')}
+                        </ul>
+                    </span>
+                    <div class="habit-actions d-flex align-items-center">
+                        <div class="calendar-icon mr-2">
+                            <div class="calendar-month">${new Date(habit.deadline).toLocaleString('en', {month: 'short'}).toUpperCase()}</div>
+                            <div class="calendar-day">${new Date(habit.deadline).getDate().toString().padStart(2, '0')}</div>
+                        </div>
+                        <a href="/delete/${habit.id}" class="btn btn-danger btn-sm delete-btn">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </div>
+                </li>
+            `;
+                        $('#habit-list').append(habitItem);
+                    });
+                    initializeEventHandlers();
+                },
+                error: function (error) {
+                    console.log('Error filtering habits:', error);
+                }
+            });
+        });
+
+        // Add tag on button click
+        $('#tag-container').on('click', '#add-tag-btn', function (e) {
+            e.preventDefault();
+            addTag();
+        });
+
+        // Add habit on form submit
+        $('#add-habit-form').submit(function (e) {
+            e.preventDefault();
+
+            const title = $('#habit-title').val();
+            const tags = Array.from($('#tag-container .badge')).map(tag => tag.innerText.trim());
+            const deadline = $('#habit-deadline').val();
+
+            const newHabit = {
+                title: title,
+                tags: tags,
+                deadline: deadline
+            };
+
+            $.ajax({
+                url: '/add',
+                method: 'POST',
+                data: JSON.stringify(newHabit),
+                contentType: 'application/json',
+                success: function (response) {
+                    $('#add-habit-form').trigger('reset');
+                    $('#tag-container').empty();
+                    $('#tag-container').append(`
+                    <input type="search" class="form-control d-inline-block w-auto mb-1" id="tag-input" placeholder="Enter tag">
+                    <button type="button" class="btn btn-primary mb-1" id="add-tag-btn">+</button>
+                    `);
+                    $('#add-habit-form').hide();
+                    applyFilters();
+                },
+                error: function (error) {
+                    console.log('Error adding habit:', error);
+                }
+            });
+        });
+
+        // Function to add a tag
+        function addTag() {
+            const tagInput = document.getElementById('tag-input');
+            const tagContainer = document.getElementById('tag-container');
+            const tagValue = tagInput.value.trim();
+
+            if (tagValue) {
+                const tagElement = document.createElement('span');
+                tagElement.className = 'badge badge-secondary mr-2';
+                tagElement.innerText = tagValue;
+
+                const hiddenTagInput = document.createElement('input');
+                hiddenTagInput.type = 'hidden';
+                hiddenTagInput.name = 'tags[]';
+                hiddenTagInput.value = tagValue;
+
+                tagContainer.appendChild(hiddenTagInput);
+                tagContainer.insertBefore(tagElement, tagInput);
+
+                tagInput.value = '';
+            }
+        }
+
+        // Function to initialize event handlers
+        function initializeEventHandlers() {
+            // Toggle habit completion
+            $('.toggle-complete').off('change').on('change', function () {
+                const habitId = $(this).data('id');
+                const completed = $(this).is(':checked');
+
+                $.ajax({
+                    url: '/toggle_complete/' + habitId,
+                    method: 'POST',
+                    data: JSON.stringify({completed: completed}),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        console.log('Habit updated successfully');
+                        applyFilters();
+                    },
+                    error: function (error) {
+                        console.log('Error updating habit:', error);
+                    }
+                });
+            });
+
+            // Delete habit
+            $('.delete-btn').off('click').on('click', function (e) {
+                e.preventDefault();
+                const habitId = $(this).attr('href').split('/').pop();
+                const habitItem = $(this).closest('.habit-item');
+
+                habitItem.addClass('animate__animated animate__fadeOut');
+
+                setTimeout(() => {
+                    $.ajax({
+                        url: '/delete/' + habitId,
+                        method: 'GET',
+                        success: function (response) {
+                            console.log('Habit deleted successfully');
+                            habitItem.remove();
+                        },
+                        error: function (error) {
+                            console.log('Error deleting habit:', error);
+                            habitItem.removeClass('animate__animated animate__fadeOut');
+                        }
+                    });
+                }, 500);
+            });
+        }
+
+        // Function to apply filters and update habit list
+        function applyFilters() {
+            const filterTags = $('#filter-tags').val().toLowerCase().split(/[\s,;]+/).map(tag => tag.trim()).filter(tag => tag !== "");
+            const filterStartDate = $('#filter-start-date').val();
+            const filterEndDate = $('#filter-end-date').val();
+            const filterStatus = $('#filter-status').val();
+
+            const filterData = {
+                tags: filterTags,
+                start_date: filterStartDate,
+                end_date: filterEndDate,
+                status: filterStatus
+            };
+
+            $.ajax({
+                url: '/filter_habits',
+                method: 'POST',
+                data: JSON.stringify(filterData),
+                contentType: 'application/json',
+                success: function (response) {
+                    $('#habit-list').empty();
+                    response.habits.forEach(habit => {
+                        const habitItem = `
+                        <li class="list-group-item d-flex justify-content-between align-items-center habit-item mb-2 animate__animated animate__fadeIn" data-tags="${habit.tags.join(',')}" data-deadline="${habit.deadline}" data-status="${habit.completed ? 'completed' : 'not_completed'}">
+                            <span class="habit-status">
+                                <input type="checkbox" class="toggle-complete custom-checkbox" data-id="${habit.id}" ${habit.completed ? 'checked' : ''}>
+                            </span>
+                            <span class="habit-details">
+                                <strong class="habit-title">${habit.title}</strong>
+                                <ul class="tags-list ml-2">
+                                    ${habit.tags.map(tag => `<li class="badge badge-secondary">${tag}</li>`).join('')}
+                                </ul>
+                            </span>
+                            <div class="habit-actions d-flex align-items-center">
+                                <div class="calendar-icon mr-2">
+                                    <div class="calendar-month">${new Date(habit.deadline).toLocaleString('en', {month: 'short'}).toUpperCase()}</div>
+                                    <div class="calendar-day">${new Date(habit.deadline).getDate().toString().padStart(2, '0')}</div>
+                                </div>
+                                <a href="/delete/${habit.id}" class="btn btn-danger btn-sm delete-btn">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </div>
+                        </li>
+                    `;
+                        $('#habit-list').append(habitItem);
+                    });
+                    initializeEventHandlers();
+                },
+                error: function (error) {
+                    console.log('Error filtering habits:', error);
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>
